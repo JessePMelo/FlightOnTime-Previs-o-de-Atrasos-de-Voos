@@ -1,63 +1,225 @@
-Descrição do projeto
+# ✈️ AeroInsight — Previsão Inteligente de Atrasos de Voos
 
-O desafio do FlightOnTime consiste em desenvolver uma solução preditiva capaz de estimar se um voo vai decolar no horário ou com atraso.
+> **Sistema completo de Data Science & Machine Learning com foco em produção, integração via API e tomada de decisão baseada em risco.**
 
-O time de Data Science criará um modelo que aprende padrões a partir de dados históricos de voos (companhia aérea, aeroporto, horário, dia da semana, etc.), e o time de Back-End construirá uma API que disponibiliza essa previsão em tempo real, permitindo que outros sistemas consultem facilmente se um voo tem risco de atraso.
+Este repositório apresenta um **projeto aplicado de previsão de atrasos de voos**, desenvolvido com base em **dados públicos oficiais**, utilizando práticas realistas de engenharia de dados, validação temporal e entrega de um **artefato único pronto para uso em produção**.
 
-Necessidade do cliente (explicação não técnica)
+Embora desenvolvido no contexto de um hackathon educacional, o projeto **extrapola deliberadamente o escopo de um MVP simples**, priorizando arquitetura realista, robustez e integração com backend.
 
-Todos que viajam de avião — e especialmente as companhias aéreas e aeroportos — sofrem com atrasos.
+---
 
-Esses atrasos causam insatisfação nos passageiros, custos extras para as empresas e problemas de logística (como conexões perdidas e remanejamentos de voos).
+## 📌 Contexto Institucional
 
-O cliente quer prever, com base em dados do voo (origem, destino, horário, companhia aérea, etc.), qual é a probabilidade de o voo atrasar para se preparar com antecedência:
+Este projeto foi desenvolvido no contexto do programa **Oracle Next Education (ONE)**.
 
-Passageiros podem receber alertas antes de sair de casa.
+- **Programa:** Oracle Next Education (ONE)
+- **Turma:** G8
+- **Hackathon:** Hackathon ONE II – Brasil
+- **Equipe:** H12-25-B — Equipo 41 (Data Science)
 
-Companhias aéreas podem ajustar a operação e minimizar o impacto.
+O objetivo do hackathon foi criar uma solução aplicada de Ciência de Dados, integrando **modelagem preditiva**, **engenharia de dados** e **uso em produção**, seguindo boas práticas industriais.
 
-Aeroportos podem planejar melhor o uso da infraestrutura.
+---
 
-Validação de mercado
+## 🎯 Problema de Negócio
 
-Prever atrasos é uma aplicação real e valiosa de ciência de dados em transporte.
+Atrasos de voos geram impactos significativos em:
 
-Companhias aéreas e startups do setor usam modelos preditivos semelhantes para:
+- Custos operacionais de companhias aéreas  
+- Logística aeroportuária e conexões  
+- Planejamento de frota e tripulação  
+- Experiência e satisfação do passageiro  
 
-melhorar a pontualidade e o planejamento de frota;
+A pergunta central do projeto é:
 
-reduzir custos operacionais e reclamações;
+> **“Dado um voo, qual é a probabilidade de ele sofrer um atraso relevante?”**
 
-aumentar a satisfação do cliente com informações mais transparentes.
+O foco do sistema **não é prever com 100% de acerto**, mas fornecer **probabilidades confiáveis de risco**, permitindo decisões antecipadas e mitigação de impacto operacional.
 
-Mesmo um modelo simples pode ser útil, pois ajuda a identificar horários ou aeroportos com maior risco de atraso — um diferencial para o setor aéreo.
+---
 
-Expectativa para este hackathon
+## 🧠 Formulação do Problema
 
-Público: alunos iniciantes em tecnologia, sem experiência profissional na área, que já estudaram Back-end (Java, Spring, APIs REST, persistência) e Data Science (Python, Pandas, scikit-learn, modelagem supervisionada).
+O problema foi formulado como uma **classificação binária supervisionada**:
 
-Objetivo: criar um MVP (produto mínimo viável) que recebe informações de um voo e retorna se ele provavelmente será Pontual ou Atrasado.
+| Classe | Definição |
+|------|----------|
+| `0` | Voo sem atraso relevante |
+| `1` | Voo com atraso ≥ 15 minutos |
 
-Escopo sugerido: classificação binária (0 = Pontual, 1 = Atrasado) usando um dataset simples e limpo.
+O modelo retorna:
 
-Entregáveis desejados
+- a classe prevista  
+- a **probabilidade associada**, utilizada por regras de negócio, alertas e sistemas externos  
 
-Notebook (Jupyter/Colab) do time de Data Science, contendo:
+---
 
-Exploração e limpeza de dados (EDA);
+## 📊 Fontes de Dados Oficiais
 
-Criação de variáveis relevantes (ex.: hora do voo, dia da semana, aeroporto de origem/destino, companhia aérea);
+O projeto utiliza **exclusivamente dados públicos e confiáveis**, garantindo reprodutibilidade e validade analítica:
 
-Treinamento de um modelo preditivo (ex.: Logistic Regression, Random Forest);
+- **ANAC (Brasil)** — dados operacionais de voos comerciais  
+- **Bureau of Transportation Statistics (EUA)** — dados oficiais do DOT  
+- **ERA5 / ECMWF** — dados meteorológicos de reanálise climática  
+- **OurAirports** — dados geográficos de aeroportos (IATA e ICAO)  
 
-Avaliação do desempenho (Acurácia, Precisão, Recall, F1-score);
+---
 
-Exportação do modelo serializado (joblib/pickle).
+## 🧩 Arquitetura do Pipeline de Dados
 
-Aplicação Back-End (API REST) desenvolvida em Java (Spring Boot), contendo:
+O pipeline foi projetado seguindo princípios de **engenharia de dados moderna**, com foco em uso real em produção.
 
-Endpoint /predict que recebe informações de um voo e retorna a previsão;
+### 🔹 ETL Operacional
 
-Integração com o modelo de DS (direta ou via microserviço separado);
+- Padronização e unificação de bases heterogêneas (ANAC + BTS)  
+- Criação de features exclusivamente **pré-voo**  
+- Definição consistente do target (`delay ≥ 15 min`)  
 
-Tratamento de erros e respostas padronizadas em JSON.
+### 🔹 Enriquecimento Geográfico
+
+- Associação espacial por latitude e longitude  
+- Suporte simultâneo a códigos **ICAO e IATA**  
+
+### 🔹 Enriquecimento Climático
+
+- Integração com dados ERA5  
+- Extração de variáveis em janelas de **1h e 3h antes do voo**  
+- Variáveis: vento, chuva, nebulosidade e neve  
+- Matching espacial por ponto geográfico mais próximo  
+
+### 🔹 Enriquecimento Temporal
+
+- Feriados nacionais (Brasil e EUA)  
+- Vésperas, pós-feriados e finais de semana prolongados  
+- Consideração do país do aeroporto de origem  
+
+### 🔹 Histórico Operacional (Features Estatísticas)
+
+- Taxas rolling de atraso (30 dias) por:  
+  - rota  
+  - aeroporto de origem  
+  - companhia aérea  
+- Janelas móveis com `closed="left"`  
+  → **sem vazamento de informação temporal**  
+
+### 🔹 Persistência
+
+- Dataset final salvo em **Parquet**  
+- Pipeline preparado para grandes volumes de dados  
+
+---
+
+## ⏱️ Validação Temporal e Disponibilidade de Dados
+
+A estratégia de validação temporal utiliza **anos completos de 2023 e 2024 como conjunto de treino**, enquanto o conjunto de teste corresponde ao **ano de 2025 até o mês de setembro**.
+
+Essa decisão reflete uma **limitação natural de disponibilidade de dados**, uma vez que o ano corrente ainda não estava totalmente consolidado no momento do desenvolvimento.
+
+Essa abordagem simula um **cenário real de produção**, garantindo:
+
+- ausência de *data leakage*  
+- avaliação realista de generalização  
+- alinhamento com práticas operacionais do mundo real  
+
+---
+
+## 🧠 Estratégia de Modelagem
+
+- **Algoritmo:** Random Forest Classifier  
+
+### Justificativas Técnicas
+
+- Captura relações não lineares  
+- Robustez a ruído e outliers  
+- Baixa sensibilidade à multicolinearidade  
+- Bom desempenho em dados heterogêneos  
+- Estabilidade em produção  
+- Serialização simples e confiável  
+
+---
+
+## ⚙️ Pipeline de Machine Learning
+
+- `ColumnTransformer` para pré-processamento  
+- Encoding categórico com `min_frequency`, `max_categories` e `handle_unknown="ignore"`  
+- Pipeline único de **treino e inferência**  
+- Artefato serializado contendo modelo + threshold  
+
+---
+
+## 📈 Avaliação e Estratégia de Decisão
+
+A avaliação foi realizada exclusivamente em **dados futuros (2025 até setembro)**.
+
+- Métricas: Precision, Recall, F1-score  
+- Análise explícita de trade-off entre falsos positivos e falsos negativos  
+- Ajuste manual de **threshold de decisão**  
+- Priorização da **detecção preventiva de risco**  
+
+O modelo é intencionalmente **probabilístico e conservador**.
+
+---
+
+## 📦 Entrega para Produção
+
+O projeto entrega um **artefato único de inferência**, pronto para consumo por APIs e sistemas externos:
+
+```python
+artefato = {
+    "pipeline": modelo_treinado,
+    "threshold": 0.502
+}
+```
+
+Esse formato garante:
+
+- consistência entre treino e produção
+- integração simples com backend
+- previsões reproduzíveis
+
+---
+
+## 🔌 Integração com Backend
+
+O modelo foi projetado para ser consumido por uma API REST, que:
+
+- valida o contrato de features
+- garante ordem e tipo das variáveis
+- retorna previsão (Pontual / Atrasado) e probabilidade associada
+
+A integração evita dependência direta do notebook e simula um ambiente real de produção.
+
+---
+
+## 🧰 Stack Tecnológica
+
+- Python 3.10+
+- Pandas / NumPy
+- Scikit-learn
+- Xarray
+- PyArrow / Parquet
+- Joblib
+- FastAPI
+
+---
+
+## 📌 Observações Importantes
+
+Projeto desenvolvido ao longo de mais de 150 notebooks incrementais.
+
+Este repositório consolida a versão final limpa e produtiva.
+
+O vídeo de apresentação prioriza visão geral devido à limitação de tempo.
+
+---
+
+## 🏁 Conclusão
+
+Este projeto demonstra a construção de um sistema completo de Data Science aplicado, abordando desafios reais de:
+
+- dados heterogêneos
+- validação temporal
+- integração em produção
+- tomada de decisão baseada em probabilidade
+
+O trabalho foi desenvolvido com foco em empregabilidade, arquitetura realista e boas práticas industriais.
