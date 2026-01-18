@@ -179,6 +179,17 @@ Esse formato garante:
 
 ---
 
+### 📦 Organização dos Releases
+
+Os artefatos do projeto estão organizados em releases distintos:
+
+- **Dataset**: contém os dados consolidados utilizados como base do projeto.
+- **Data Processed**: contém todos os artefatos gerados ou obtidos via pipeline de código, incluindo dados climáticos (ERA5), arquivos processados intermediários, wrappers e modelos serializados.
+
+Essa separação reflete práticas reais de projetos de dados, distinguindo dados de entrada e artefatos derivados.
+
+---
+
 ## 🔌 Integração com Backend
 
 O modelo foi projetado para ser consumido por uma API REST, que:
