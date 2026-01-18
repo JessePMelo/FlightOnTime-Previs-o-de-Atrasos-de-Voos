@@ -9,10 +9,10 @@ Este módulo encapsula:
 
 O backend deve interagir EXCLUSIVAMENTE com a função `predict_voo`.
 """
-
+from pathlib import Path
 import joblib
 import pandas as pd
-from pathlib import Path
+
 
 # ============================================================
 # Carregamento do artefato
@@ -30,19 +30,25 @@ threshold = artefato["threshold"]
 
 def previsao_voo(novo_voo: dict) -> dict:
     """
-    Executa inferência do modelo de atraso de voos.
-
-    Retorna:
-        prediction (int): 0 = sem atraso | 1 = com atraso
-        probability (float): probabilidade da classe 1
+    Retorna a classe mais provável (0 = No horário, 1 = Atrasado)
+    e a probabilidade associada em percentual.
     """
 
-    X_novo = pd.DataFrame([novo_voo])
+    entrada_voo = pd.DataFrame([novo_voo])
 
-    proba = modelo.predict_proba(X_novo)[:, 1][0]
-    prediction = int(proba >= threshold)
+    prob_no_horario, prob_atrasado = modelo.predict_proba(entrada_voo)[0]
+
+    if prob_atrasado > prob_no_horario:
+        classe_prevista = 1
+        probabilidade = prob_atrasado
+    else:
+        classe_prevista = 0
+        probabilidade = prob_no_horario
 
     return {
-        "prediction": prediction,
-        "probability": float(proba)
+        "prediction": classe_prevista,
+        "probability": float(round(probabilidade * 100,2))
     }
+
+
+
