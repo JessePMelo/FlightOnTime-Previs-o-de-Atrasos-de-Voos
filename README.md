@@ -29,6 +29,22 @@ O objetivo do hackathon foi criar uma solução aplicada de Ciência de Dados, i
 
 ---
 
+## 🧑‍💻 Escopo e Responsabilidade
+
+Este repositório representa **o módulo de Data Science** de um projeto maior desenvolvido em equipe durante o **Hackathon ONE II – Brasil**.
+
+O escopo deste repositório contempla integralmente as atividades de **Ciência de Dados**, incluindo:
+
+- engenharia e tratamento de dados  
+- criação e validação de features  
+- modelagem preditiva  
+- validação temporal  
+- geração do artefato final de inferência  
+
+A integração com o backend (API) foi realizada em conjunto com outros membros do time e não está incluída neste repositório.
+
+---
+
 ## 🎯 Problema de Negócio
 
 Atrasos de voos geram impactos significativos em:
