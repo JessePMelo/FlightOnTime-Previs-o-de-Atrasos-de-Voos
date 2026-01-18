@@ -8,6 +8,14 @@ Embora desenvolvido no contexto de um hackathon educacional, o projeto **extrapo
 
 ---
 
+## 🎥 Demonstração em Vídeo
+
+Uma demonstração resumida do projeto, apresentando o pipeline de dados, as decisões técnicas e a integração entre Data Science e Backend.
+
+➡️ [Assistir vídeo de demonstração](https://drive.google.com/file/d/1ed7sWZXfKuD38DUxaAGuk-G_lvv6tygc/view?usp=sharing)
+
+---
+
 ## 📌 Contexto Institucional
 
 Este projeto foi desenvolvido no contexto do programa **Oracle Next Education (ONE)**.
