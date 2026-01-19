@@ -191,7 +191,7 @@ O projeto entrega um **artefato único de inferência**, pronto para consumo por
 ```python
 artefato = {
     "pipeline": modelo_treinado,
-    "threshold": 0.502
+    "threshold": 0.215
 }
 ```
 
